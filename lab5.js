@@ -8,6 +8,13 @@ const assignment = {
     score: 0,
 };
 
+const todos = [
+    { id: 1, title: "Task 1", completed: false },
+    { id: 2, title: "Task 2", completed: true },
+    { id: 3, title: "Task 3", completed: false },
+    { id: 4, title: "Task 4", completed: false },
+];
+
 
 const Lab5 = (app) => {
 
@@ -65,10 +72,74 @@ const Lab5 = (app) => {
 
     app.get("/a5/assignment/completed/:newCompleted", (req, res) => {
         const { newCompleted } = req.params;
-        assignment.completed = newCompleted == 'true';
+        assignment.completed = newCompleted !== 'false';
         res.json(assignment);
     });
 
+    app.get("/a5/todos", (req, res) => {
+        const { completed } = req.query;
+        if (completed !== undefined) {
+            const completedTodos = todos.filter(
+                (t) => String(t.completed) === completed);
+            res.json(completedTodos);
+            return;
+        }
+        res.json(todos);
+    });
+
+    app.get("/a5/todos/create", (req, res) => {
+        const newTodo = {
+            id: new Date().getTime(),
+            title: "New Task",
+            completed: false,
+        };
+        todos.push(newTodo);
+        res.json(todos);
+    });
+
+    app.get("/a5/todos/:id", (req, res) => {
+        const { id } = req.params;
+        console.log(id)
+        const todo = todos.find((t) => t.id === parseInt(id));
+        res.json(todo);
+    });
+
+    app.get("/a5/todos/:id/title/:title", (req, res) => {
+        const { id, title } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        if (todo) {
+            todo.title = title;
+        }
+        res.json(todos);
+    });
+
+    app.get("/a5/todos/:id/completed/:completed", (req, res) => {
+        const { id, completed } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        if (todo) {
+            todo.completed = completed !== 'false';
+        }
+        res.json(todos);
+    });
+
+    app.get("/a5/todos/:id/description/:description", (req, res) => {
+        const { id, description } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        if (todo) {
+            todo.description = description;
+        }
+        res.json(todos);
+    });
+
+
+    app.get("/a5/todos/:id/delete", (req, res) => {
+        const { id } = req.params;
+        const index = todos.findIndex((t) => t.id === parseInt(id));
+        if (index >= 0) {
+            todos.splice(index, 1);
+        }
+        res.json(todos);
+    });
 
 };
 
