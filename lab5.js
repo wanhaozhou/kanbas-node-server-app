@@ -99,7 +99,6 @@ const Lab5 = (app) => {
 
     app.get("/a5/todos/:id", (req, res) => {
         const { id } = req.params;
-        console.log(id)
         const todo = todos.find((t) => t.id === parseInt(id));
         res.json(todo);
     });
