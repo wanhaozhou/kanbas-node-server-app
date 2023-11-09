@@ -9,9 +9,17 @@ import ModuleRoutes from "./modules/routes.js";
 
 
 const app = express();
+
+const origins = ['http://localhost:3000'];
+if (process.env.FRONTEND_URL) {
+    for (let i = 1; i <= 6; i++) {
+        origins.push("https://a" + i + "--" + process.env.FRONTEND_URL);
+    }
+}
+
 app.use(cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL ? /.*/ + process.env.FRONTEND_URL : 'http://localhost:3000'
+    origin: origins
 }));
 app.use(express.json());
 
