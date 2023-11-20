@@ -16,7 +16,7 @@ const CourseRoutes = (app) => {
         const { id } = req.params;
         const course = req.body;
         Database.courses = Database.courses.map((c) =>
-            c._id === id ? { c, ...course } : c
+            c._id === id ? { ...c, ...course } : c
         );
         res.sendStatus(204);
     });
