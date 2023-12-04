@@ -1,6 +1,5 @@
 import * as dao from "./dao.js";
 
-
 const UserRoutes = (app) => {
     const findAllUsers = async (req, res) => {
         const users = await dao.findAllUsers();
@@ -9,8 +8,12 @@ const UserRoutes = (app) => {
     app.get("/api/users", findAllUsers);
 
     const createUser = async (req, res) => {
-        const user = await dao.createUser(req.body);
-        res.json(user);
+        try {
+            const user = await dao.createUser(req.body);
+            res.json(user);
+        } catch (error) {
+            res.sendStatus(400);
+        }
     };
     app.post("/api/users", createUser);
 
@@ -30,7 +33,6 @@ const UserRoutes = (app) => {
     };
     app.delete("/api/users/:userId", deleteUser);
 
-
     const signin = async (req, res) => {
         const { username, password } = req.body;
         const currentUser = await dao.findUserByCredentials(username, password);
@@ -45,6 +47,10 @@ const UserRoutes = (app) => {
     app.post("/api/users/account", account);
 
     const updateUser = async (req, res) => {
+        if (req.params.userId === 'undefined') {
+            res.sendStatus(400);
+            return;
+        }
         const { userId } = req.params;
         const status = await dao.updateUser(userId, req.body);
         const currentUser = await dao.findUserById(userId);
@@ -54,11 +60,10 @@ const UserRoutes = (app) => {
     app.put("/api/users/:userId", updateUser);
 
     const signup = async (req, res) => {
-        const user = await dao.findUserByUsername(
-            req.body.username);
+        const user = await dao.findUserByUsername(req.body.username);
         if (user) {
-            res.status(400).json(
-                { message: "Username already taken" });
+            res.status(400).json({ message: "Username already taken" });
+            return;
         }
         const currentUser = await dao.createUser(req.body);
         req.session['currentUser'] = currentUser;

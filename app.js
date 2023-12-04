@@ -12,7 +12,6 @@ import AssignmentRoutes from './assignments/routes.js';
 import UserRoutes from "./users/routes.js";
 
 const DB_CONNECTION = process.env.DB_CONNECTION || 'mongodb://127.0.0.1:27017/kanbas';
-console.log(DB_CONNECTION);
 mongoose.connect(DB_CONNECTION);
 const app = express();
 
